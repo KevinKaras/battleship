@@ -1,7 +1,5 @@
 const readline = require ('readline');
 
-const rl = readline.createInterface(process.stdin, process.stdout);
-
 class HumanPlayer {
   constructor() {
     // TODO: Create a new readline interface and store is as an instance
@@ -19,11 +17,18 @@ class HumanPlayer {
       processMove([row, col]);
     })
   }
-  
 
-  processGameOver(isWon) {
+
+  processGameOver(isWon, turns) {
     // TODO: Display a different message depending on if the player won or lost
     // the game. Close the rl interface.
+    if (isWon){
+      console.log(`You won in ${turns}!!!`);
+    } else {
+      console.log("Sorry you lost!!!");
+    }
+    
+    this.rl.close()
   }
 }
 
