@@ -1,39 +1,55 @@
+
 class Board {
-  constructor() {
+  constructor(numRows, numCols, numShips) {
     // TODO: Set up constructor that sets the numRos, numCols, and numShips.
     // TODO: Set this.grid equal to the return value of the instance method
     // populateGrid().
+    this.numRows = numRows;     // {numRows: 5}
+    this.numCols = numCols;
+    this.numShips = numShips;
+    this.grid = this.populateGrid(); // 2D array row x col [[null], [null], [], [], []]
+    // console.log(this.grid);
   }
-
   populateGrid() {
     // TODO: Using the instance variables numRows, numCols, and numShips, return
     // a 2D array representing the state of the board.
+    let grid = [];
+    let count = 0;
+    for (let i = 0; i < this.numRows; i++) { //5
+      grid.push(Array(this.numCols).fill(null));
+    }
+    for (let i = 0; i < this.numShips; i++) {
+      let randomRow = Math.floor(Math.random() * Math.floor(6));
+      let randomCol = Math.floor(Math.random() * Math.floor(6));
+      if (count < this.numShips) {  // 0 <
+        if (grid[randomRow][randomCol] === null) {
+          grid[randomRow][randomCol] = 's';
+          count++
+        }
+      }
+    }
+    console.log(grid);
   }
-
   display() {
     // TODO: Print the game board with marks on any spaces that have been fired
     // upon. Be sure not to display the unhit ships to the user! Hint: you might
     // be able to use console.table()
   }
-
   count() {
     // TODO: Return the number of valid targets (ships) remaining.
   }
-
   isValidMove(pos) {
     // TODO: Take in an attack position (in the form of an array [row, col]) and
     // return true if the position is a valid move.
   }
-
   isGameOver() {
     // TODO: Return true if the game is over (when all ships are hit).
   }
-
   attack() {
     // TODO: Take in an attack position in the form of an array, [row, col], as
     // a parameter. Update this.grid depending on if the position is an empty
     // space or a damaged ship.
   }
 }
-
+const firstGame = new Board(6, 6, 3);
 module.exports = Board;
