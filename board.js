@@ -1,55 +1,93 @@
-
 class Board {
   constructor(numRows, numCols, numShips) {
-    // TODO: Set up constructor that sets the numRos, numCols, and numShips.
-    // TODO: Set this.grid equal to the return value of the instance method
-    // populateGrid().
-    this.numRows = numRows;     // {numRows: 5}
+    this.numRows = numRows;
     this.numCols = numCols;
     this.numShips = numShips;
-    this.grid = this.populateGrid(); // 2D array row x col [[null], [null], [], [], []]
-    // console.log(this.grid);
+    this.grid = this.populateGrid();
   }
+
   populateGrid() {
-    // TODO: Using the instance variables numRows, numCols, and numShips, return
-    // a 2D array representing the state of the board.
-    let grid = [];
-    let count = 0;
-    for (let i = 0; i < this.numRows; i++) { //5
+    const grid = [];
+    for (let i = 0; i < this.numRows; i++) {
+      // This are using the new Array constructor and filling it with null
+      // values.
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Array
       grid.push(Array(this.numCols).fill(null));
     }
-    for (let i = 0; i < this.numShips; i++) {
-      let randomRow = Math.floor(Math.random() * Math.floor(6));
-      let randomCol = Math.floor(Math.random() * Math.floor(6));
-      if (count < this.numShips) {  // 0 <
-        if (grid[randomRow][randomCol] === null) {
-          grid[randomRow][randomCol] = 's';
-          count++
-        }
+
+    let count = this.numShips;
+    while (count > 0) {
+      const randomRow = Math.floor(Math.random() * this.numRows);
+      const randomCol = Math.floor(Math.random() * this.numCols);
+
+      if (grid[randomRow][randomCol] === null) {
+        grid[randomRow][randomCol] = "s";
+        count--;
       }
     }
-    console.log(grid);
+    return grid;
   }
+
   display() {
-    // TODO: Print the game board with marks on any spaces that have been fired
-    // upon. Be sure not to display the unhit ships to the user! Hint: you might
-    // be able to use console.table()
+    // We are making use of nested .map's and a ternary statement to change any
+    // 's' and null inside of our grid to be a "wave" (~) 'x' and 'h' will
+    // remain the same because we want our user to see those marks.
+    const displayGrid = this.grid.map((row) => {
+      return row.map((col) => (col === "s" || col === null ? "~" : col));
+    });
+
+    console.table(displayGrid);
   }
+
   count() {
-    // TODO: Return the number of valid targets (ships) remaining.
+    return this.numShips;
   }
+
   isValidMove(pos) {
-    // TODO: Take in an attack position (in the form of an array [row, col]) and
-    // return true if the position is a valid move.
+    const [row, col] = pos;
+
+    // First we checked to see that the position is a valid input from the
+    // original readline quesiton.
+    if (row == null || col == null) {
+      return false;
+    }
+
+    // Next we check to make sure the input is in a valid range.
+    const isPositionOutOfBounds =
+      row < 0 || row >= this.numRows || col < 0 || col >= this.numCols;
+
+    if (isPositionOutOfBounds) {
+      return false;
+    }
+
+    // If it's a valid range, we then need to make sure its not a position
+    // they've already tried.
+    const isPreviouslyMadeMove =
+      this.grid[row][col] === "h" || this.grid[row][col] === "x";
+
+    if (isPreviouslyMadeMove) {
+      return false;
+    }
+
+    // If none of the above returns false we know that it is a valid move and
+    // can return true.
+    return true;
   }
+
   isGameOver() {
-    // TODO: Return true if the game is over (when all ships are hit).
+    return this.numShips === 0;
   }
-  attack() {
-    // TODO: Take in an attack position in the form of an array, [row, col], as
-    // a parameter. Update this.grid depending on if the position is an empty
-    // space or a damaged ship.
+
+  attack(pos) {
+    const [row, col] = pos;
+    const target = this.grid[row][col];
+    if (target === "s") {
+      this.grid[row][col] = "h";
+      this.numShips--;
+    } else {
+      this.grid[row][col] = "x";
+    }
   }
 }
-const firstGame = new Board(6, 6, 3);
+
 module.exports = Board;

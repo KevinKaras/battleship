@@ -1,24 +1,45 @@
+const Board = require("./board");
+
 class BattleshipGame {
-  constructor() {
-    // TODO: Set up constructor to store reference to the humanPlayer and
-    // instantiate a new instance of the Board class and set it to this.board.
-    // Remember to import your Board class.
+  constructor(player1, numRows, numCols, numShips) {
+    this.player1 = player1;
+    this.currentPlayer = player1;
+    this.board = new Board(numRows, numCols, numShips);
+    this.turns = 0;
   }
 
   playTurn() {
-    // TODO: Display the state of the game and ask for the users input.
+    this.displayStatus();
+    // We are wrapping processMove inside of an annonymous function so that it
+    // retains it's context of what 'this' is. Otherwise, in the constructor we
+    // would have to write this.processMove = this.processMove.bind(this)
+    this.currentPlayer.getMove((pos) => this.processMove(pos));
   }
 
   displayStatus() {
-    // TODO: Display the current state of the game to the player.
+    console.log("\n*******************************");
+    console.log("'h' means hit, 'x' means no-hit\n");
+    this.board.display();
   }
 
-  processMove() {
-    // TODO: Detemerine if the move is valid. If so, invoke the attack method on
-    //     the board instance and increment this.turns by 1. If the game is over,
-    //     display the final status of the game and end the game. If not, play
-    //     another turn. If the move is invalid, ask the player to input a valid
-    //     position and play another turn.
+  processMove(pos) {
+    console.clear();
+    // NOTE: this.board is equal to an instance of our board class that is
+    // defined in our constructor method and so we have access to all the
+    // instance methods on the board.
+    if (this.board.isValidMove(pos)) {
+      this.board.attack(pos);
+      this.turns++;
+      if (this.board.isGameOver()) {
+        this.displayStatus();
+        this.currentPlayer.processGameOver(true, this.turns);
+      } else {
+        this.playTurn();
+      }
+    } else {
+      console.log("Please enter a valid move.");
+      this.playTurn();
+    }
   }
 }
 

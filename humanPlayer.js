@@ -1,34 +1,30 @@
-const readline = require ('readline');
+const readline = require("readline");
 
 class HumanPlayer {
   constructor() {
-    // TODO: Create a new readline interface and store is as an instance
-    // variable (this.rl). Remember to require the built-in node module,
-    // 'readline'
-    this.rl = readline.createInterface(process.stdin, process.stdout)
+    this.rl = readline.createInterface(process.stdin, process.stdout);
   }
 
   getMove(processMove) {
-    // TODO: Ask the user for their move and process the answer using the rl
-    // interface.Invoke the callback function (processMove), passing in
-    // the given answer in the form of an array representing [row, col]
-    this.rl.question("where would you like to attack, (example: (3,1) \n", (answer) =>{
-      const [row, col] = answer.split(',');
-      processMove([row, col]);
-    })
+    this.rl.question("Choose a coordinate to hit. (e.g. 3,1)\n> ", (answer) => {
+      // Here we chose to split on a comma to make sure that we have both a row
+      // and a col index to target. Imagine if the board was an 11x11 grid, you
+      // wouldn't be able to just enter in 1111. It would need to be 11,11
+      const [row, col] = answer.split(",");
+      // NOTE: `processMove` is not defined in the `HumanPlayer` class, but it
+      // will be passed in as an argument to the `getMove` method so we will
+      // have the access to call it here.
+      processMove([Number(row), Number(col)]);
+    });
   }
 
-
-  processGameOver(isWon, turns) {
-    // TODO: Display a different message depending on if the player won or lost
-    // the game. Close the rl interface.
-    if (isWon){
-      console.log(`You won in ${turns}!!!`);
+  processGameOver(isWon, turn) {
+    if (isWon) {
+      console.log(`Nice job, you won in ${turn} turns!`);
     } else {
-      console.log("Sorry you lost!!!");
+      console.log("You lose!");
     }
-    
-    this.rl.close()
+    this.rl.close();
   }
 }
 
